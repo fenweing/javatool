@@ -13,7 +13,7 @@ import java.util.Locale;
 
 /**
  * @description: I18nUtil
- * @author: 120439
+ * @author: parrer
  * @date: 2019/12/24 14:35
  * @version: 1.0.0
  */

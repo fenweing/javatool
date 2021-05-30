@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @Description 断言器
  * @ClassName AssertUtil
- * @Author 120439
+ * @Author parrer
  */
 public final class AssertUtil {
     private final static Logger logger = LoggerFactory.getLogger(AssertUtil.class);

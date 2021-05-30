@@ -1,7 +1,7 @@
 package com.parrer.constant;
 
 /**
- * @author 120439
+ * @author parrer
  * @version 1.0
  * @description api接口返回码枚举
  */

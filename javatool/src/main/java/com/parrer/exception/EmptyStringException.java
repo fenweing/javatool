@@ -4,7 +4,7 @@ import com.parrer.constant.ApiResponseCodeEnum;
 import com.parrer.util.StringUtil;
 
 /**
- * @author fw
+ * @Author parrer
  * @version 1.0
  * @description 字符串为空异常类（string==null||String.length=0）
  * @since

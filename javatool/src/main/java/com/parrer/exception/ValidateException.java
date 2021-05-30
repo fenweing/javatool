@@ -6,7 +6,7 @@ import com.parrer.util.StringUtil;
 /**
  * 参数校验异常
  *
- * @author fw
+ * @Author parrer
  * @date 2019年7月31日 上午10:58:05
  */
 public class ValidateException extends RuntimeException {

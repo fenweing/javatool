@@ -1,13 +1,8 @@
 package com.parrer.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang.ArrayUtils;
+
+import java.util.*;
 
 /**
  * @description: CollectionUtil
@@ -81,6 +76,18 @@ public final class CollectionUtil {
         return resMap;
     }
 
+    public static <T> List<T> operate(List<T> src, Operate<T> operate) {
+        if (isEmpty(src)) {
+            return src;
+        }
+        List<T> resList = new ArrayList<>(src.size());
+        for (T item : src) {
+            resList.add(operate.operate(item));
+        }
+        return resList;
+    }
+
+
     public static <V, T> List<V> toValueList(List<T> src, ValueGetter<T> valueGetter) {
         List resList = new ArrayList<>();
         if (isEmpty(src)) {
@@ -126,6 +133,30 @@ public final class CollectionUtil {
         return resList;
     }
 
+    public static Object[] nullToEmptyString(Object[] array) {
+        if (ArrayUtils.isEmpty(array)) {
+            return array;
+        }
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == null) {
+                array[i] = "";
+            }
+        }
+        return array;
+    }
+
+    public static List<Object> nullToEmptyString(List<Object> src) {
+        if (isEmpty(src)) {
+            return src;
+        }
+        for (int i = 0; i < src.size(); i++) {
+            if (src.get(i) == null) {
+                src.set(i, "");
+            }
+        }
+        return src;
+    }
+
     public interface ValueGetter<T> {
         Object get(T t);
     }
@@ -136,5 +167,9 @@ public final class CollectionUtil {
 
     public interface Condition<T> {
         Boolean get(T t);
+    }
+
+    public interface Operate<T> {
+        T operate(T t);
     }
 }

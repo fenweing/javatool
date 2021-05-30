@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @description: ExceptionUtil
- * @author: 120439
+ * @author: parrer
  * @date: 2019/12/24 15:47
  * @version: 1.0.0
  */

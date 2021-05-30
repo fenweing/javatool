@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 说明：
  * 1、所有拷贝方法都是深拷贝
  * 2、此工具类依赖orika项目，基于JavaAssist动态生成字节码创建类实现，更多介绍请参考 https://github.com/orika-mapper/orika
- * @Author fw
+ * @Author parrer
  * @Date 2019/7/19 17:39
  * @Version 1.0.0
  **/
@@ -38,7 +38,7 @@ public final class BeanCopyUtil {
      * @param destClazz 拷贝目标Class
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> D copy(S src, Class<D> destClazz) {
         validateParam(src, destClazz);
@@ -52,7 +52,7 @@ public final class BeanCopyUtil {
      * @param dest 拷贝目标对象
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> void copy(S src, D dest) {
         validateParam(src, dest);
@@ -68,7 +68,7 @@ public final class BeanCopyUtil {
      * @param destClazz 拷贝目标Class
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> D boundCopy(S src, Class<D> destClazz) {
         validateParam(src, destClazz);
@@ -84,7 +84,7 @@ public final class BeanCopyUtil {
      * @param dest 拷贝目标对象
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> void boundCopy(S src, D dest) {
         validateParam(src, dest);
@@ -116,7 +116,7 @@ public final class BeanCopyUtil {
      * @param <S>
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> D copyOnCustomField(S src, Class<D> destClazz, FieldPair fieldPair) {
         validateParam(src, destClazz, fieldPair);
@@ -133,7 +133,7 @@ public final class BeanCopyUtil {
      * @param fieldPair
      * @param <S>
      * @param <D>
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> void copyOnCustomField(S src, D dest, FieldPair fieldPair) {
         validateParam(src, dest, fieldPair);
@@ -151,7 +151,7 @@ public final class BeanCopyUtil {
      * @param <S>
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> List<D> copyOnCustomField(List<S> srcs, Class<D> destClazz, FieldPair fieldPair) {
         validateParam(srcs, destClazz, fieldPair);
@@ -175,7 +175,7 @@ public final class BeanCopyUtil {
      * @param fieldPair
      * @param <S>
      * @param <D>
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> void copyOnCustomField(List<S> srcs, List<D> dests, FieldPair fieldPair) {
         validateParam(srcs, dests, fieldPair);
@@ -200,7 +200,7 @@ public final class BeanCopyUtil {
      * @param <S>
      * @param <D>
      * @return
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> D copyOnCustom(S src, Class<D> destClazz, MapperFacade mapperFacade) {
         validateParam(src, destClazz, mapperFacade);
@@ -224,7 +224,7 @@ public final class BeanCopyUtil {
      * @param mapperFacade
      * @param <S>
      * @param <D>
-     * @author fw
+     * @Author parrer
      */
     public static <S, D> void copyOnCustom(S src, D dest, MapperFacade mapperFacade) {
         validateParam(src, dest, mapperFacade);
@@ -295,7 +295,7 @@ public final class BeanCopyUtil {
     /**
      * @ClassName FieldPair
      * @Description 映射字段存储中间类
-     * @Author fw
+     * @Author parrer
      * @Date 2019/7/19 18:21
      * @Version 1.0.0
      * @Copyright: Copyright 2018 Thunisoft, Inc. All rights reserved.
@@ -318,7 +318,7 @@ public final class BeanCopyUtil {
          * @param fieldA
          * @param fieldB
          * @return
-         * @author fw
+         * @Author parrer
          */
         public FieldPair add(String fieldA, String fieldB) {
             if (null == fieldA || fieldA.length() <= 0 || null == fieldB || fieldB.length() <= 0) {

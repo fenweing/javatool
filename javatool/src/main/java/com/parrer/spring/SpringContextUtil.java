@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 /**
  * SpringContextUtil
  *
- * @author fw
+ * @Author parrer
  * @version 1.0
  */
 @Component
@@ -53,7 +53,7 @@ public class SpringContextUtil implements ApplicationContextAware {
      */
     @SuppressWarnings("unchecked")
     public static <T> T getBean(Class<T> clazz) {
-        return (T) applicationContext.getBeansOfType(clazz);
+        return (T) applicationContext.getBean(clazz);
     }
 
     public static Map getBeansOfType(Class type) {

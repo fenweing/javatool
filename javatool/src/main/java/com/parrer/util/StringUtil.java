@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * @Description 字符串操作工具类
  * @ClassName StringUtil
- * @Author fw
+ * @Author parrer
  * @Date 2019/11/4 15:31:41
  */
 public class StringUtil {
@@ -21,7 +21,7 @@ public class StringUtil {
      *
      * @param params
      * @return
-     * @author 120439
+     * @author parrer
      */
     public static Boolean isBlankBoth(String... params) {
         if ((null == params) || (params.length == 0)) {
@@ -40,7 +40,7 @@ public class StringUtil {
      *
      * @param params
      * @return
-     * @author 120439
+     * @author parrer
      */
     public static Boolean isBlankLeastone(String... params) {
         if ((null == params) || (params.length == 0)) {
@@ -59,7 +59,7 @@ public class StringUtil {
      *
      * @param params
      * @return
-     * @author 120439
+     * @author parrer
      */
     public static Boolean isEmptyBoth(String... params) {
         if ((null == params) || (params.length == 0)) {
@@ -78,7 +78,7 @@ public class StringUtil {
      *
      * @param params
      * @return
-     * @author 120439
+     * @author parrer
      */
     public static Boolean isEmptyLeastone(String... params) {
         if ((null == params) || (params.length == 0)) {

@@ -2,50 +2,39 @@ package com.parrer.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 /**
- * @author chenzesheng
  * @version 1.0
- * @since 2019.06.27
  */
-public class DateUtils {
-    private static final Logger logger = LoggerFactory.getLogger(DateUtils.class);
+public class DateUtil {
+    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     public static final int FIRST_DAY_OF_WEEK = Calendar.MONDAY;
-    public static final String DATA_FORMAT_yyyy_MM_dd = "yyyy-MM-dd";
-    public static final String DATA_FORMAT_yyyy_MM = "yyyy-MM";
-    public static final String DATA_FORMAT_yyyyMMdd = "yyyyMMdd";
-    public static final String DATA_FORMAT_yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
-    public static final String DATA_FORMAT_MM_dd_HH_mm_ss = "MM-dd HH:mm:ss";
-    public static final String DATA_FORMAT_yyyy_MM_dd_HH_mm = "yyyy-MM-dd HH:mm";
-    public static final String DATA_FORMAT_AMERICAN = "MMM dd, yyyy hh:mm:ss a";
+    public static final String DATE_FORMAT_yyyy_MM_dd = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_yyyy_MM = "yyyy-MM";
+    public static final String DATE_FORMAT_yyyyMMdd = "yyyyMMdd";
+    public static final String DATE_FORMAT_yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_MM_dd_HH_mm_ss = "MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_yyyy_MM_dd_HH_mm = "yyyy-MM-dd HH:mm";
+    public static final String DATE_FORMAT_AMERICAN = "MMM dd, yyyy hh:mm:ss a";
     public static final String ISO_DATETIME_TIME_ZONE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String ISO_DATETIME_TIME_ZONE_FORMAT_LC = "yyyyMMdd'T'HHmmssSSS'Z'";
     public static final String ISO_DATETIME_TIME_ZONE_FORMAT_LC_NO_MS = "yyyyMMdd'T'HHmmss'Z'";
     public static final String ISO_DATETIME_TIME_ZONE_FORMAT_LC_NO_MSZ = "yyyyMMdd'T'HHmmss";
-    public static final String DATA_FORMAT_MMM_dd_yyyy_HH_mm_ss_aaa = "MMM dd,yyyy HH:mm:ss aaa";
-    public static final String DATA_FORMAT_MM_dd = "MM-dd";
-    public static final String DATA_FORMAT_YMDHMS = "yyyyMMddHHmmss";
-    public static final String DATA_FORMAT_YMD_H_M_S = "yyyy/MM/dd HH:mm:ss";
-    public static final String DATA_FORMAT_H_M_S = "HH:mm:ss";
-    public static final String DATA_FORMAT_YMD = "yyyy/MM/dd";
-    public static final String DATA_FORMAT_YM = "yyyy/MM";
-    public static final String DATA_FORMAT_Y = "yyyy年";
+    public static final String DATE_FORMAT_MMM_dd_yyyy_HH_mm_ss_aaa = "MMM dd,yyyy HH:mm:ss aaa";
+    public static final String DATE_FORMAT_MM_dd = "MM-dd";
+    public static final String DATE_FORMAT_YMDHMS = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_YMD_H_M_S = "yyyy/MM/dd HH:mm:ss";
+    public static final String DATE_FORMAT_H_M_S = "HH:mm:ss";
+    public static final String DATE_FORMAT_YMD = "yyyy/MM/dd";
+    public static final String DATE_FORMAT_YM = "yyyy/MM";
+    public static final String DATE_FORMAT_Y = "yyyy年";
 
     public static final String THE = "第";
     public static final String YEAR = "年";
@@ -78,188 +67,43 @@ public class DateUtils {
 
     private static String TIME_ZONE = "GMT+8";
 
-    private DateUtils() {
-    }
-
-    private static ThreadLocal<DateFormat> threadLocal =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HHmmss"));
-
-    private static ThreadLocal<DateFormat> threadLocalV2 =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-
-    public static long date2MillSecond(Date date) {
-        try {
-            SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-            String dateStr = dateTimeFormatter.format(date);
-            Date converted = dateTimeFormatter.parse(dateStr);
-            ZonedDateTime zonedDateTime = converted.toInstant().atZone(ZoneId.of("Asia/Shanghai"));
-            return zonedDateTime.toInstant().toEpochMilli();
-        } catch (Exception e) {
-            return new Date().toInstant().toEpochMilli();
+    private static ThreadLocal<HashMap<String, SimpleDateFormat>> simpleDateFormatThreadLocal = new ThreadLocal<HashMap<String, SimpleDateFormat>>() {
+        protected HashMap<String, SimpleDateFormat> initialValue() {
+            return new HashMap<String, SimpleDateFormat>() {{
+                put(DATE_FORMAT_yyyy_MM, new SimpleDateFormat(DATE_FORMAT_yyyy_MM));
+                put(DATE_FORMAT_yyyy_MM_dd, new SimpleDateFormat(DATE_FORMAT_yyyy_MM_dd));
+                put(DATE_FORMAT_yyyy_MM_dd_HH_mm, new SimpleDateFormat(DATE_FORMAT_yyyy_MM_dd_HH_mm));
+                put(DATE_FORMAT_yyyy_MM_dd_HH_mm_ss, new SimpleDateFormat(DATE_FORMAT_yyyy_MM_dd_HH_mm_ss));
+            }};
         }
+    };
+
+    private DateUtil() {
     }
 
-    public static String formatDate2ReadableStr(Date date) {
-        return threadLocal.get().format(date);
+    public static String formatNow() {
+        return simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM_dd_HH_mm_ss).format(new Date());
     }
 
-    public static String formatDate2ReadableStrV2(Date date) {
-        return threadLocalV2.get().format(date);
+    public static String format(Date date) {
+        return simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM_dd_HH_mm_ss).format(date);
     }
 
-
-    /**
-     * 一天的开始.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long dayStart(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = LocalDateTime.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(), 0, 0, 0);
-        return convertMilli(ldt);
+    public static String formatYYYYMM(Date date) {
+        return simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM).format(date);
     }
 
-    /**
-     * 一天的结束.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long dayEnd(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = LocalDateTime.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(), 23, 59, 59);
-        return convertMilli(ldt);
+    public static String formatYYYYMMDD(Date date) {
+        return simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM_dd).format(date);
     }
 
-    /**
-     * 一月的开始.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long monthStart(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = LocalDateTime.of(ldt.getYear(), ldt.getMonth(), 1, 0, 0, 0);
-        return convertMilli(ldt);
-    }
-
-    /**
-     * 一月的结束.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long monthEnd(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = LocalDateTime
-                .of(ldt.getYear(), ldt.getMonth(), ldt.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth(), 23, 59,
-                        59);
-        return convertMilli(ldt);
-    }
-
-    /**
-     * 一周的开始.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long weekStart(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = ldt.minusDays((long) ldt.getDayOfWeek().getValue() - 1);
-        ldt = LocalDateTime.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(), 0, 0, 0);
-        return convertMilli(ldt);
-    }
-
-    /**
-     * 一周的结束.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long weekEnd(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(weekStart(timeStamp));
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = ldt.plusDays(6);
-        ldt = LocalDateTime.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(), 23, 59, 59);
-        return convertMilli(ldt);
-    }
-
-    /**
-     * 一年的开始.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long yearStart(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = LocalDateTime.of(ldt.getYear(), 1, 1, 0, 0, 0);
-        return convertMilli(ldt);
-    }
-
-    /**
-     * 一年的结束.
-     *
-     * @param timeStamp 时间戳
-     * @return long
-     */
-    public static long yearEnd(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(TIME_ZONE));
-        ldt = LocalDateTime.of(ldt.getYear(), 12, 31, 23, 59, 59);
-        return convertMilli(ldt);
-    }
-
-    /**
-     * 按北京时区把LocalDateTime类型时间转换为时间毫秒值.
-     *
-     * @param localDateTime localDateTime
-     * @return long
-     */
-    public static long convertMilli(LocalDateTime localDateTime) {
-        return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-    }
-
-    /**
-     * 把时间戳转换为yyyy-MM-dd HH:mm:ss格式的时间字符串.
-     *
-     * @param timeStamp 时间戳
-     * @return String
-     */
-    public static String converMilli2TimeStr(long timeStamp) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of("GMT+8"));
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return ldt.format(dtf);
-    }
-
-    /**
-     * 把时间戳转换为yyyy-MM-dd HH:mm:ss格式的时间字符串.
-     *
-     * @param timeStamp 时间戳
-     * @param format    时间格式
-     * @return String
-     */
-    public static String converMilli2TimeStr(long timeStamp, String format) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of("GMT+8"));
-        if (StringUtils.isEmpty(format)) {
-            format = "yyyy-MM-dd HH:mm:ss";
-        }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
-        return ldt.format(dtf);
+    public static String formatYYYYMMDDHHMM(Date date) {
+        return simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM_dd_HH_mm).format(date);
     }
 
     public static String generateDateFromMs(Long ms) {
         Date date = new Date(ms);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = simpleDateFormatThreadLocal.get().get("yyyy-MM-dd");
         return simpleDateFormat.format(date);
     }
 
@@ -270,8 +114,8 @@ public class DateUtils {
      * @param strFormat
      * @return
      */
-    public static String dateToString(Date dateValue, String strFormat) {
-        return new SimpleDateFormat(strFormat).format(dateValue);
+    public static String format(Date dateValue, String strFormat) {
+        return simpleDateFormatThreadLocal.get().get(strFormat).format(dateValue);
     }
 
     /**
@@ -284,7 +128,7 @@ public class DateUtils {
     public static Date stringToDate(String strValue, String strFormat) {
         Date date = null;
         try {
-            date = new SimpleDateFormat(strFormat).parse(strValue);
+            date = simpleDateFormatThreadLocal.get().get(strFormat).parse(strValue);
         } catch (ParseException e) {
             logger.error("时间解析失败", e);
         }
@@ -302,7 +146,7 @@ public class DateUtils {
         String result = null;
         if (obj != null) {
             if (obj instanceof Date) {
-                result = dateToString((Date) obj, strFormat);
+                result = format((Date) obj, strFormat);
             } else {
                 result = obj.toString();
             }
@@ -317,7 +161,7 @@ public class DateUtils {
      * @return
      */
     public static Timestamp dateToTimestamp(Date date) {
-        SimpleDateFormat df = new SimpleDateFormat(DATA_FORMAT_yyyy_MM_dd_HH_mm_ss);
+        SimpleDateFormat df = simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM_dd_HH_mm_ss);
         String time = df.format(date);
         Timestamp ts = Timestamp.valueOf(time);
         return ts;
@@ -331,7 +175,7 @@ public class DateUtils {
      * @return
      */
     public static Timestamp dateToTimestamp(Date date, String format) {
-        SimpleDateFormat df = new SimpleDateFormat(format);
+        SimpleDateFormat df = simpleDateFormatThreadLocal.get().get(format);
         String time = df.format(date);
         Timestamp ts = Timestamp.valueOf(time);
         return ts;
@@ -344,7 +188,7 @@ public class DateUtils {
      * @return
      */
     public static String dateToyyyyMMddString(Date date) {
-        SimpleDateFormat df = new SimpleDateFormat(DATA_FORMAT_yyyyMMdd);
+        SimpleDateFormat df = simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyyMMdd);
         return df.format(date);
     }
 
@@ -449,7 +293,7 @@ public class DateUtils {
      * @return
      */
     public static String getAddDayDateFromToday(Date date, int plusDays, String dateFormat) {
-        return dateToString(getAddDayDate(date, plusDays), dateFormat);
+        return format(getAddDayDate(date, plusDays), dateFormat);
     }
 
     /**
@@ -1129,7 +973,7 @@ public class DateUtils {
     public static String getYesterday() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
-        String yesterday = new SimpleDateFormat(DATA_FORMAT_yyyy_MM_dd).format(cal.getTime());
+        String yesterday = simpleDateFormatThreadLocal.get().get(DATE_FORMAT_yyyy_MM_dd).format(cal.getTime());
         return yesterday;
     }
 
@@ -1273,9 +1117,9 @@ public class DateUtils {
 
     public static boolean compareHMSDate(String startTime, String endTime, String currentTime) {
         String yyyyMMDdd = "1970-01-01 ";
-        Date startDate = DateUtils.stringToDate(yyyyMMDdd + startTime, DateUtils.DATA_FORMAT_yyyy_MM_dd_HH_mm_ss);
-        Date endDate = DateUtils.stringToDate(yyyyMMDdd + endTime, DateUtils.DATA_FORMAT_yyyy_MM_dd_HH_mm_ss);
-        Date currentDate = DateUtils.stringToDate(yyyyMMDdd + currentTime, DateUtils.DATA_FORMAT_yyyy_MM_dd_HH_mm_ss);
+        Date startDate = DateUtil.stringToDate(yyyyMMDdd + startTime, DateUtil.DATE_FORMAT_yyyy_MM_dd_HH_mm_ss);
+        Date endDate = DateUtil.stringToDate(yyyyMMDdd + endTime, DateUtil.DATE_FORMAT_yyyy_MM_dd_HH_mm_ss);
+        Date currentDate = DateUtil.stringToDate(yyyyMMDdd + currentTime, DateUtil.DATE_FORMAT_yyyy_MM_dd_HH_mm_ss);
         Long startMin = startDate.getTime();
         Long endMin = endDate.getTime();
         Long currentMin = currentDate.getTime();
@@ -1482,7 +1326,7 @@ public class DateUtils {
      * @return
      */
     public static Date parseDate(String strDate) {
-        return DateUtils.stringToDate(strDate, DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        return DateUtil.stringToDate(strDate, DateUtil.DATE_FORMAT_yyyy_MM_dd);
     }
 
     public static int getYear(String date) throws ParseException {
@@ -1493,7 +1337,7 @@ public class DateUtils {
     }
 
     public String getYearMonth(Date date) {
-        return formatDateByFormat(date, DateUtils.DATA_FORMAT_yyyy_MM);
+        return formatDateByFormat(date, DateUtil.DATE_FORMAT_yyyy_MM);
     }
 
     /**
@@ -1503,7 +1347,7 @@ public class DateUtils {
      * @return String
      */
     public String getMonthBegin(Date date) {
-        return formatDateByFormat(date, DateUtils.DATA_FORMAT_yyyy_MM) + "-01";
+        return formatDateByFormat(date, DateUtil.DATE_FORMAT_yyyy_MM) + "-01";
     }
 
     /**
@@ -1518,7 +1362,7 @@ public class DateUtils {
         calendar.add(Calendar.MONTH, 1);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.DAY_OF_YEAR, -1);
-        return formatDateByFormat(calendar.getTime(), DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        return formatDateByFormat(calendar.getTime(), DateUtil.DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -1531,7 +1375,7 @@ public class DateUtils {
     public static String formatDateByFormat(Date date, String pattern) {
         String result = "";
         if (date != null) {
-            result = DateUtils.dateToString(date, pattern);
+            result = DateUtil.format(date, pattern);
         }
         return result;
     }
@@ -1556,9 +1400,9 @@ public class DateUtils {
     public static String formatDate(Date date, String pattern) {
         String strDate = null;
         if (pattern == null) {
-            pattern = DateUtils.DATA_FORMAT_yyyy_MM_dd;
+            pattern = DateUtil.DATE_FORMAT_yyyy_MM_dd;
         }
-        strDate = DateUtils.dateToString(date, pattern);
+        strDate = DateUtil.format(date, pattern);
         return strDate;
     }
 
@@ -1903,12 +1747,12 @@ public class DateUtils {
      * 取得指定日期所在周的最后一天
      */
     public static String getLastDayOfWeek(String date) {
-        Date time = DateUtils.stringToDate(date, DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        Date time = DateUtil.stringToDate(date, DateUtil.DATE_FORMAT_yyyy_MM_dd);
         Calendar c = new GregorianCalendar();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.setTime(time);
         c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek() + 6); // Sunday
-        return DateUtils.dateToString(c.getTime(), DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        return DateUtil.format(c.getTime(), DateUtil.DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -1919,8 +1763,8 @@ public class DateUtils {
      * </p>
      */
     public static boolean compareDate(String startDate, String endDate) {
-        Date date1 = DateUtils.stringToDate(startDate, DateUtils.DATA_FORMAT_yyyy_MM_dd);
-        Date date2 = DateUtils.stringToDate(endDate, DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        Date date1 = DateUtil.stringToDate(startDate, DateUtil.DATE_FORMAT_yyyy_MM_dd);
+        Date date2 = DateUtil.stringToDate(endDate, DateUtil.DATE_FORMAT_yyyy_MM_dd);
         if (date1.getTime() > date2.getTime()) {
             return false;
         }
@@ -1956,12 +1800,12 @@ public class DateUtils {
      * 取得指定日期所在周的第一天
      */
     public static String getFirstDayOfWeek(String date) {
-        Date time = DateUtils.stringToDate(date, DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        Date time = DateUtil.stringToDate(date, DateUtil.DATE_FORMAT_yyyy_MM_dd);
         Calendar c = new GregorianCalendar();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.setTime(time);
         c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Monday
-        return DateUtils.dateToString(c.getTime(), DateUtils.DATA_FORMAT_yyyy_MM_dd);
+        return DateUtil.format(c.getTime(), DateUtil.DATE_FORMAT_yyyy_MM_dd);
     }
 
     public static Date getUTCTime(Date date) {
@@ -2200,7 +2044,7 @@ public class DateUtils {
         c.setTime(date);
         int day1 = c.get(Calendar.DATE);
         c.set(Calendar.DATE, day1 - 1);
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -2215,7 +2059,7 @@ public class DateUtils {
         c.setTime(date);
         int day1 = c.get(Calendar.MONTH);
         c.set(Calendar.MONTH, day1 - 1);
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -2229,7 +2073,7 @@ public class DateUtils {
         Date date = parseDate(strData);
         c.setTime(date);
         c.set(Calendar.DATE, 1);
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -2243,7 +2087,7 @@ public class DateUtils {
         Date date = parseDate(strData);
         c.setTime(date);
         c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -2258,7 +2102,7 @@ public class DateUtils {
         c.setTime(date);
         c.set(Calendar.MONTH, 0);
         c.set(Calendar.DATE, 1);
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -2273,7 +2117,7 @@ public class DateUtils {
         c.setTime(date);
         c.set(Calendar.MONTH, 11);
         c.set(Calendar.DATE, 31);
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     /**
@@ -2288,7 +2132,7 @@ public class DateUtils {
         c.setTime(date);
         int day1 = c.get(Calendar.YEAR);
         c.set(Calendar.YEAR, day1 - 1);
-        return formatDate(c.getTime(), DATA_FORMAT_yyyy_MM_dd);
+        return formatDate(c.getTime(), DATE_FORMAT_yyyy_MM_dd);
     }
 
     public static String intToStringDuration(int duration) {

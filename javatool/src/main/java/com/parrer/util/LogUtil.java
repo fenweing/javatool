@@ -1,6 +1,5 @@
 package com.parrer.util;
 
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ import java.lang.reflect.Method;
 
 /**
  * @description: LogUtil
- * @author: 120439
+ * @author: parrer
  * @time: 2019/11/12 17:33
  */
 public class LogUtil {
@@ -19,24 +18,32 @@ public class LogUtil {
     private static DefaultParameterNameDiscoverer discover = new DefaultParameterNameDiscoverer();
 
     public static void apiEntry(Object... params) {
+        params = CollectionUtil.nullToEmptyString(params);
         try {
             Method callingMethod = getCallingMethod(3);
             if (null == callingMethod) {
                 return;
             }
-//        ApiOperation apiAnnotation = callingMethod.getAnnotation(ApiOperation.class);
+            Object[] printParams = null;
             String defaultNote = callingMethod.getDeclaringClass().getName() + "." + callingMethod.getName() + "接口进入";
-//        String note = null == apiAnnotation ? defaultNote : apiAnnotation.value() + "接口进入";
             String note = defaultNote + "接口进入";
             if (!ArrayUtils.isEmpty(params)) {
-                note += "，参数列表：";
                 String[] parameterNames = discover.getParameterNames(callingMethod);
-                for (int i = 0; i < params.length; i++) {
-                    note += parameterNames[i] + "-【{}】，";
+                if (ArrayUtils.isNotEmpty(parameterNames)) {
+                    note += "，参数列表：";
+                    int min = Math.min(params.length, parameterNames.length);
+                    for (int i = 0; i < min; i++) {
+                        note += parameterNames[i] + "-【{}】，";
+                    }
+                    printParams = ArrayUtils.subarray(params, 0, min);
+                    note = note.substring(0, note.length() - 1);
                 }
-                note = note.substring(0, note.length() - 1);
             }
-            logger.info(note, params);
+            if (ArrayUtils.isNotEmpty(printParams)) {
+                logger.info(note, params);
+            } else {
+                logger.info(note + "，无参。");
+            }
         } catch (Exception e) {
             logger.error("打印方法入参日志失败，采用默认打印方式", e);
             if (ArrayUtils.isEmpty(params)) {
